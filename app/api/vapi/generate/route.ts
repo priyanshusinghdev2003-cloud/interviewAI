@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import { db } from "@/firebase/admin";
 import { getRandomInterviewCover } from "@/lib/utils";
 import { groq } from "@ai-sdk/groq";
@@ -7,18 +9,7 @@ export async function GET() {
   return Response.json({ success: true, data: "Thank YOU!" }, { status: 200 });
 }
 
-let isGenerating = false;
-
 export async function POST(request: Request) {
-  if (isGenerating) {
-    return Response.json(
-      { success: false, error: "Already generating" },
-      { status: 429 }
-    );
-  }
-
-  isGenerating = true;
-
   try {
     const { type, role, level, techstack, amount, userid } =
       await request.json();
@@ -70,7 +61,5 @@ export async function POST(request: Request) {
       { success: false, error: error.message || "Failed to generate" },
       { status: 500 }
     );
-  } finally {
-    isGenerating = false;
   }
 }
